@@ -1,19 +1,26 @@
 package com.gmail.williammingardi.forum.controller
 
+import com.gmail.williammingardi.forum.dto.NewTopicForm
+import com.gmail.williammingardi.forum.dto.TopicView
 import com.gmail.williammingardi.forum.service.TopicService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/topics")
 class TopicController(private val service: TopicService) {
 
     @GetMapping
-    fun getTopics() = service.getTopics()
+    fun getTopics(): List<TopicView> {
+        return service.getTopics()
+    }
 
     @GetMapping("/{id}")
-    fun getTopic(@PathVariable id: Long) = service.getTopic(id)
+    fun getTopic(@PathVariable id: Long): TopicView {
+        return service.getTopicView(id)
+    }
 
+    @PostMapping
+    fun addTopic(@RequestBody @Valid newTopicForm: NewTopicForm) =
+        service.addTopic(newTopicForm)
 }

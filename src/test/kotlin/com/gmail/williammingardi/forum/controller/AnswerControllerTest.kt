@@ -13,44 +13,26 @@ import org.springframework.test.web.servlet.get
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class TopicControllerTest @Autowired constructor(
+internal class AnswerControllerTest @Autowired constructor(
     val mockMvc: MockMvc
 ) {
 
     val baseUrl = "/topics"
 
     @Nested
-    @DisplayName("GET /topics")
+    @DisplayName("GET /topics/{id}/answers")
     @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class GetTopics {
+    inner class GetTopicAnswers {
 
         @Test
-        fun `should return all banks`() {
-            mockMvc.get(baseUrl)
+        fun `should return answers with topic id provided`() {
+            mockMvc.get("$baseUrl/1/answers")
                 .andDo { print() }
                 .andExpect {
                     status { isOk() }
                     content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$[0].title") { value("Duvida Kotlin") }
-                    jsonPath("$[0].id") { value(1) }
-                }
-        }
-    }
-
-    @Nested
-    @DisplayName("GET /topics/{id}")
-    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-    inner class GetTopic {
-
-        @Test
-        fun `should return a bank with id provided`() {
-            mockMvc.get("$baseUrl/2")
-                .andDo { print() }
-                .andExpect {
-                    status { isOk() }
-                    content { contentType(MediaType.APPLICATION_JSON) }
-                    jsonPath("$.title") { value("Ajuda com Init") }
-                    jsonPath("$.id") { value(2) }
+                    jsonPath("$[0].message") { value("Resposta 1") }
+                    jsonPath("$[0].solution") { value(false) }
                 }
         }
     }
