@@ -2,6 +2,8 @@ package com.gmail.williammingardi.forum.service
 
 import com.gmail.williammingardi.forum.dto.NewTopicForm
 import com.gmail.williammingardi.forum.dto.TopicView
+import com.gmail.williammingardi.forum.dto.UpdateTopicForm
+import com.gmail.williammingardi.forum.exception.NotFoundException
 import com.gmail.williammingardi.forum.mapper.TopicFormMapper
 import com.gmail.williammingardi.forum.mapper.TopicViewMapper
 import com.gmail.williammingardi.forum.model.Answer
@@ -67,10 +69,38 @@ class TopicService(
         return topics.first { it.id == id }
     }
 
-    fun addTopic(form: NewTopicForm) {
-        topics.add(
-            topicFormMapper.map(form).also { it.id = topics.size.inc().toLong() }
-        )
+    fun addTopic(form: NewTopicForm): TopicView {
+        val topic = topicFormMapper.map(form).also { it.id = topics.size.inc().toLong() }
+        topics.add(topic)
+        return topicViewMapper.map(topic)
     }
 
+    fun updateTopic(form: UpdateTopicForm): TopicView {
+        val topic = topics.firstOrNull { it.id == form.id }?.also {
+            topics.remove(it)
+            topics.add(
+                Topic(
+                    id = form.id,
+                    title = form.title,
+                    message = form.message,
+                    author = it.author,
+                    course = it.course,
+                    answers = it.answers,
+                    status = it.status
+                )
+            )
+        } ?: throw TopicNotFoundException(form.id)
+
+        return topicViewMapper.map(topic)
+    }
+
+    fun deleteTopic(id: Long) {
+        topics.firstOrNull { it.id == id }.also {
+            topics.remove(it)
+        } ?: throw TopicNotFoundException(id)
+    }
+
+    class TopicNotFoundException(val id: Long) : NotFoundException() {
+        override val message = "Topic not found with id '$id'"
+    }
 }
