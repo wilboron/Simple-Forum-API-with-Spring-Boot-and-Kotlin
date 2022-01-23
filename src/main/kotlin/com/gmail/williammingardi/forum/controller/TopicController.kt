@@ -6,6 +6,7 @@ import com.gmail.williammingardi.forum.dto.UpdateTopicForm
 import com.gmail.williammingardi.forum.service.TopicService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 import javax.validation.Valid
@@ -21,10 +22,11 @@ class TopicController(private val service: TopicService) {
 
     @GetMapping("/{id}")
     fun getTopic(@PathVariable id: Long): TopicView {
-        return service.getTopicView(id)
+        return service.getTopicViewById(id)
     }
 
     @PostMapping
+    @Transactional
     fun addTopic(
         @RequestBody @Valid form: NewTopicForm,
         uriBuilder: UriComponentsBuilder
@@ -35,12 +37,14 @@ class TopicController(private val service: TopicService) {
     }
 
     @PutMapping
+    @Transactional
     fun updateTopic(@RequestBody @Valid form: UpdateTopicForm): TopicView {
         return service.updateTopic(form)
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Transactional
     fun deleteTopic(@PathVariable id: Long) {
         service.deleteTopic(id)
     }

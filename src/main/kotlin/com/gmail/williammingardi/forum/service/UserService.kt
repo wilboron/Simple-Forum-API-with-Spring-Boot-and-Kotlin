@@ -1,23 +1,19 @@
 package com.gmail.williammingardi.forum.service
 
+import com.gmail.williammingardi.forum.exception.NotFoundException
 import com.gmail.williammingardi.forum.model.User
+import com.gmail.williammingardi.forum.repository.UserRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(final var users: List<User>) {
+class UserService(
+    private val repository: UserRepository
+) {
 
-    init {
-        val user = User(
-            id = 1,
-            name = "Ana Paula",
-            email = "ana@gmail.com"
-        )
-
-        users = listOf(user)
+    fun getUserById(id: Long): User {
+        return repository.findByIdOrNull(id)
+            ?: throw NotFoundException("User", id)
     }
 
-    fun getUser(id: Long): User {
-        return users.firstOrNull { it.id == id }
-            ?: throw IllegalAccessError()
-    }
 }

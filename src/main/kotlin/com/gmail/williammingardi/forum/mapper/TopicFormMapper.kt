@@ -15,8 +15,8 @@ class TopicFormMapper(
         return Topic(
             title = t.title,
             message = t.message,
-            course = courseService.getCourse(t.idCourse),
-            author = userService.getUser(t.idAuthor)
+            course = courseService.getCourseById(t.idCourse),
+            author = userService.getUserById(t.idAuthor)
         )
     }
 }

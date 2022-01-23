@@ -1,24 +1,17 @@
 package com.gmail.williammingardi.forum.service
 
+import com.gmail.williammingardi.forum.exception.NotFoundException
 import com.gmail.williammingardi.forum.model.Course
+import com.gmail.williammingardi.forum.repository.CourseRepository
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class CourseService(final var courses: List<Course>) {
+class CourseService(private val repository: CourseRepository) {
 
-    init {
-        val course = Course(
-            id = 1,
-            name = "Kotlin",
-            category = "Programação"
-        )
-
-        courses = listOf(course)
-    }
-
-    fun getCourse(id: Long): Course {
-        return courses.firstOrNull { it.id == id }
-            ?: throw IllegalAccessError()
+    fun getCourseById(id: Long): Course {
+        return repository.findByIdOrNull(id)
+            ?: throw NotFoundException("Course", id)
     }
 
 }

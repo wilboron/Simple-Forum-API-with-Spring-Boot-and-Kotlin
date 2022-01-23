@@ -15,7 +15,7 @@ class NewAnswerFormMapper(
         return Answer(
             id = t.id,
             message = t.message,
-            author = userService.getUser(t.authorId),
+            author = userService.getUserById(t.authorId),
             topic = topicService.getTopic(t.topicId),
             solution = t.solution
         )
