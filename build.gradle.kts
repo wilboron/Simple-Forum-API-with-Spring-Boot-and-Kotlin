@@ -25,8 +25,9 @@ dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.8.2")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.postgresql:postgresql")
-	implementation("com.h2database:h2")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springframework.boot:spring-boot-starter-cache")
+	implementation("org.flywaydb:flyway-core:8.4.2")
+	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

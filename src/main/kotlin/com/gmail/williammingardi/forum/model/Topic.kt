@@ -1,6 +1,7 @@
 package com.gmail.williammingardi.forum.model
 
 import java.time.LocalDateTime
+import java.time.OffsetDateTime
 import javax.persistence.*
 
 @Entity
@@ -10,7 +11,7 @@ class Topic(
     var id: Long? = null,
     var title: String,
     var message: String,
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: OffsetDateTime = OffsetDateTime.now(),
     @ManyToOne
     var course: Course,
     @ManyToOne

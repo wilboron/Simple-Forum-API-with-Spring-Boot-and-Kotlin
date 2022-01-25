@@ -1,9 +1,14 @@
 package com.gmail.williammingardi.forum.controller
 
-import com.gmail.williammingardi.forum.dto.NewTopicForm
-import com.gmail.williammingardi.forum.dto.TopicView
-import com.gmail.williammingardi.forum.dto.UpdateTopicForm
+import com.gmail.williammingardi.forum.dto.*
+import com.gmail.williammingardi.forum.model.Topic
 import com.gmail.williammingardi.forum.service.TopicService
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -16,8 +21,14 @@ import javax.validation.Valid
 class TopicController(private val service: TopicService) {
 
     @GetMapping
-    fun getTopics(): List<TopicView> {
-        return service.getTopics()
+    @Cacheable("topics")
+    fun getTopics(
+        @RequestParam(defaultValue = "") courseName: String,
+        @RequestParam(defaultValue = "") authorName: String,
+        @PageableDefault(sort = ["createdAt"], direction = Sort.Direction.DESC) pagination:
+        Pageable
+    ): Page<TopicView> {
+        return service.getTopics(courseName, authorName, pagination)
     }
 
     @GetMapping("/{id}")
@@ -27,6 +38,7 @@ class TopicController(private val service: TopicService) {
 
     @PostMapping
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun addTopic(
         @RequestBody @Valid form: NewTopicForm,
         uriBuilder: UriComponentsBuilder
@@ -38,6 +50,7 @@ class TopicController(private val service: TopicService) {
 
     @PutMapping
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun updateTopic(@RequestBody @Valid form: UpdateTopicForm): TopicView {
         return service.updateTopic(form)
     }
@@ -45,7 +58,18 @@ class TopicController(private val service: TopicService) {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @CacheEvict(value = ["topics"], allEntries = true)
     fun deleteTopic(@PathVariable id: Long) {
         service.deleteTopic(id)
+    }
+
+    @GetMapping("report")
+    fun report(): List<TopicByCategoryDto> {
+        return service.report()
+    }
+
+    @GetMapping("no-answer-report")
+    fun noAnswerReport(): List<Topic> {
+        return service.noAnswerReport()
     }
 }

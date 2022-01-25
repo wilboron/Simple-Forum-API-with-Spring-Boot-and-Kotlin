@@ -1,20 +1,21 @@
 spring:
-  sql.init.mode: always
   datasource:
     database-plataform: postgres
     url: jdbc:postgresql://localhost:5438/forum
     username: postgres
     password: postgres
+  data:
+    web:
+      pageable:
+        max-page-size: 100
   jpa:
     database: POSTGRESQL
     database-plataform: org.hibernate.dialect.PostgreSQLDialect
-    defer-datasource-initialization: true
 
     properties:
       hibernate:
         show_sql: true
         format_sql: true
-        generate-ddl: true
-        ddl-auto: create-drop
+
 
 
