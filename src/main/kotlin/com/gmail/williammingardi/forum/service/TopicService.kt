@@ -39,7 +39,7 @@ class TopicService(
         )
     }
 
-    fun getTopic(id: Long): Topic {
+    fun getTopicById(id: Long): Topic {
         return repository.findByIdOrNull(id)
             ?: throw NotFoundException("Topic", id)
     }
